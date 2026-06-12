@@ -1,0 +1,78 @@
+# 生产缺陷神探智能体配置
+
+agent:
+  name: "defect-hunter"
+  version: "1.0.0"
+  description: "生产缺陷分析专家"
+
+# ============================================================
+# LLM 配置（默认使用火山引擎方舟 + glm-5.1）
+# ============================================================
+llm:
+  provider: "volcengine"          # volcengine / ark / openai / anthropic
+  model: "glm-5.1"                # 模型名 或 endpoint ID（如 ep-xxxxxx）
+  api_key: "${ARK_API_KEY}"       # 从环境变量读取
+  base_url: ""                    # 留空用 https://ark.cn-beijing.volces.com/api/v3
+  max_tokens: 4096
+  temperature: 0.2                # 分析类任务建议低温度
+
+# ============================================================
+# 切换其他 Provider 示例（按需复制覆盖上方 llm 块）
+# ============================================================
+# # OpenAI / 任何兼容协议网关
+# llm:
+#   provider: "openai"
+#   model: "gpt-4o-mini"
+#   api_key: "${OPENAI_API_KEY}"
+#   base_url: ""                  # 留空用官方
+#
+# # Anthropic Claude
+# llm:
+#   provider: "anthropic"
+#   model: "claude-sonnet-4-6"
+#   api_key: "${ANTHROPIC_API_KEY}"
+
+# ============================================================
+# 知识库配置
+# ============================================================
+knowledge_base:
+  path: "data/knowledge_base/defects.jsonl"
+  enable_dedup: true
+  similarity_threshold: 0.3       # Jaccard 相似度阈值
+
+# ============================================================
+# 脱敏规则（送 LLM 前必走）
+# ============================================================
+sanitizer:
+  enable: true
+  rules:
+    - type: "password"
+      pattern: '(?i)(password|pwd|secret|token|api[_-]?key)\s*[:=]\s*\S+'
+      replacement: '\1=[已脱敏]'
+    - type: "ip"
+      pattern: '\b(?:\d{1,3}\.){3}\d{1,3}\b'
+      replacement: 'X.X.X.X'
+    - type: "phone"
+      pattern: '\b1[3-9]\d{9}\b'
+      replacement: '1XX****XXXX'
+    - type: "id_card"
+      pattern: '\b\d{17}[\dXx]\b'
+      replacement: '[身份证已脱敏]'
+    - type: "email"
+      pattern: '\b[\w.+-]+@[\w-]+\.[\w.-]+\b'
+      replacement: '[邮箱已脱敏]'
+
+# ============================================================
+# 业务字典（供分析器使用）
+# ============================================================
+priority_levels:
+  P0: "致命，影响核心业务"
+  P1: "严重，影响主要功能"
+  P2: "一般，影响次要功能"
+  P3: "轻微，体验问题"
+
+# 输出
+output:
+  format: "markdown"
+  save_to_file: false
+  output_dir: "output/"

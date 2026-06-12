@@ -1,0 +1,35 @@
+[Unit]
+Description=Defect Hunter API Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=defect
+Group=defect
+WorkingDirectory=/opt/defect-hunter
+EnvironmentFile=/etc/defect-hunter.env
+ExecStart=/opt/defect-hunter/.venv/bin/uvicorn src.api:app \
+            --host 127.0.0.1 \
+            --port 8000 \
+            --workers 2 \
+            --proxy-headers \
+            --forwarded-allow-ips=127.0.0.1
+Restart=on-failure
+RestartSec=5s
+
+# 资源与安全限制
+LimitNOFILE=65535
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/opt/defect-hunter/data /opt/defect-hunter/reports /opt/defect-hunter/logs
+
+# 日志输出
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=defect-hunter
+
+[Install]
+WantedBy=multi-user.target
