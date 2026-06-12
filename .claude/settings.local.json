@@ -4,7 +4,8 @@
       "Bash(python3 *)",
       "Bash(pip install *)",
       "Bash(pip show *)",
-      "Bash(pip uninstall *)"
+      "Bash(pip uninstall *)",
+      "Bash(chmod +x /mnt/d/AI/zhinengtest/deploy/install.sh /mnt/d/AI/zhinengtest/deploy/backup.sh)"
     ]
   }
 }

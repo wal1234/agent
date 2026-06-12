@@ -454,6 +454,7 @@ pytest tests/
 | [CLAUDE.md](./CLAUDE.md) | Claude Code 工作指南（架构约束 / 优先级） |
 | [docs/智能体设计文档.md](./docs/智能体设计文档.md) | 数据画像驱动的完整设计（决策依据） |
 | [docs/数据画像速览.md](./docs/数据画像速览.md) | 1 页数据摘要 |
+| [deploy/DEPLOY-LINUX.md](./deploy/DEPLOY-LINUX.md) | **单机 Linux 云服务器部署指南**（含 systemd / Nginx / 备份） |
 
 ---
 
